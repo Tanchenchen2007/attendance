@@ -1,7 +1,11 @@
 #!/bin/bash
-# Render injects the PORT environment variable. Tomcat listens on
-# 8080 by default, so patch server.xml before startup when PORT is set.
-if [ -n "$PORT" ] && [ "$PORT" != "8080" ]; then
-  sed -i "s/port=\"8080\"/port=\"$PORT\"/" "$CATALINA_HOME/conf/server.xml"
+set -e
+
+# 检查 Render 提供的 PORT 环境变量并替换 Tomcat 配置
+if [ -n "$PORT" ]; then
+    echo "Detected PORT environment variable: $PORT"
+    sed -i "s/port=\"8080\"/port=\"$PORT\"/g" /usr/local/tomcat/conf/server.xml
 fi
-exec "$CATALINA_HOME/bin/catalina.sh" run
+
+echo "Starting Tomcat..."
+exec catalina.sh run
